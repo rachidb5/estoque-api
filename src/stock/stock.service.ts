@@ -60,10 +60,10 @@ export class StockService {
     };
   }
 
-  async findOne(id: number): Promise<Stock> {
-    const stock = await this.stockRepository.findOne({ where: { id } });
+  async findOne(imei: string): Promise<Stock> {
+    const stock = await this.stockRepository.findOne({ where: { imei } });
     if (!stock) {
-      throw new NotFoundException(`Stock com ID ${id} não encontrado`);
+      throw new NotFoundException(`Stock com ID ${imei} não encontrado`);
     }
     return stock;
   }
@@ -73,14 +73,14 @@ export class StockService {
     return this.stockRepository.save(stock);
   }
 
-  async update(id: number, updateStockDto: UpdateStockDto): Promise<Stock> {
-    const stock = await this.findOne(id);
-    Object.assign(stock, updateStockDto);
-    return this.stockRepository.save(stock);
-  }
+  // async update(id: number, updateStockDto: UpdateStockDto): Promise<Stock> {
+  //   const stock = await this.findOne(id);
+  //   Object.assign(stock, updateStockDto);
+  //   return this.stockRepository.save(stock);
+  // }
 
-  async remove(id: number): Promise<void> {
-    const stock = await this.findOne(id);
-    await this.stockRepository.remove(stock);
-  }
+  // async remove(id: number): Promise<void> {
+  //   const stock = await this.findOne(id);
+  //   await this.stockRepository.remove(stock);
+  // }
 }

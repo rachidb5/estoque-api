@@ -1,4 +1,4 @@
-import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { StockService } from './stock.service';
 import { Stock } from './entities/stock.entity';
 
@@ -21,10 +21,10 @@ export class StockController {
     return this.stockService.findAllPaginated(page, limit, search);
   }
 
-  // @Get(':id')
-  // async findOne(@Param('id', ParseIntPipe) id: number): Promise<Stock> {
-  //   return this.stockService.findOne(id);
-  // }
+  @Get(':imei')
+  async findOne(@Param('imei', ParseIntPipe) imei: string): Promise<Stock> {
+    return this.stockService.findOne(imei);
+  }
 
   // @Post()
   // @HttpCode(HttpStatus.CREATED)
