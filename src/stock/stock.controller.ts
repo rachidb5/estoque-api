@@ -1,6 +1,17 @@
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { StockService } from './stock.service';
 import { Stock } from './entities/stock.entity';
+import { CreateStockDto } from './dto/create-stock.dto';
 
 @Controller('stock')
 export class StockController {
@@ -26,11 +37,11 @@ export class StockController {
     return this.stockService.findOne(imei);
   }
 
-  // @Post()
-  // @HttpCode(HttpStatus.CREATED)
-  // async create(@Body() createStockDto: CreateStockDto): Promise<Stock> {
-  //   return this.stockService.create(createStockDto);
-  // }
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createStockDto: CreateStockDto): Promise<Stock> {
+    return this.stockService.create(createStockDto);
+  }
 
   // @Put(':id')
   // async update(
