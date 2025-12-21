@@ -7,13 +7,16 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { StockService } from './stock.service';
 import { Stock } from './entities/stock.entity';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateStockDto } from './dto/update-stock.dto';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 @ApiTags('Stock')
 @Controller('stock')
 export class StockController {
@@ -34,9 +37,9 @@ export class StockController {
     return this.stockService.findAllPaginated(page, limit, search);
   }
 
-  @Get(':imei')
-  async findOne(@Param('imei', ParseIntPipe) imei: string): Promise<Stock> {
-    return this.stockService.findOne(imei);
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Stock> {
+    return this.stockService.findOne(id);
   }
 
   @Post()
@@ -45,13 +48,13 @@ export class StockController {
     return this.stockService.create(createStockDto);
   }
 
-  // @Put(':id')
-  // async update(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Body() updateStockDto: UpdateStockDto,
-  // ): Promise<Stock> {
-  //   return this.stockService.update(id, updateStockDto);
-  // }
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateStockDto: UpdateStockDto,
+  ): Promise<Stock> {
+    return this.stockService.update(id, updateStockDto);
+  }
 
   // @Delete(':id')
   // @HttpCode(HttpStatus.NO_CONTENT)

@@ -4,6 +4,11 @@ import { Repository, ILike } from 'typeorm';
 import { Stock } from './entities/stock.entity';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { QueryFailedError } from 'typeorm';
 
 @Injectable()
 export class StockService {
@@ -60,24 +65,42 @@ export class StockService {
     };
   }
 
-  async findOne(imei: string): Promise<Stock> {
-    const stock = await this.stockRepository.findOne({ where: { imei } });
+  async findOne(id: number): Promise<Stock> {
+    const stock = await this.stockRepository.findOne({ where: { id } });
     if (!stock) {
-      throw new NotFoundException(`Stock com ID ${imei} não encontrado`);
+      throw new NotFoundException(`Stock com ID ${id} não encontrado`);
     }
     return stock;
   }
 
   async create(createStockDto: CreateStockDto): Promise<Stock> {
-    const stock = this.stockRepository.create(createStockDto);
-    return this.stockRepository.save(stock);
+    try {
+      const stock = this.stockRepository.create(createStockDto);
+      return await this.stockRepository.save(stock);
+    } catch (error) {
+      // 🔹 Erros do banco (constraint, campo inválido, etc)
+      if (error instanceof QueryFailedError) {
+        // Exemplo: campo UNIQUE duplicado
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if ((error as any).code === 'ER_DUP_ENTRY') {
+          throw new BadRequestException(
+            'Já existe um produto cadastrado com esses dados',
+          );
+        }
+
+        throw new BadRequestException('Erro ao salvar no banco de dados');
+      }
+
+      // 🔹 Erro inesperado
+      throw new InternalServerErrorException('Erro interno ao criar o produto');
+    }
   }
 
-  // async update(id: number, updateStockDto: UpdateStockDto): Promise<Stock> {
-  //   const stock = await this.findOne(id);
-  //   Object.assign(stock, updateStockDto);
-  //   return this.stockRepository.save(stock);
-  // }
+  async update(id: number, updateStockDto: UpdateStockDto): Promise<Stock> {
+    const stock = await this.findOne(id);
+    Object.assign(stock, updateStockDto);
+    return this.stockRepository.save(stock);
+  }
 
   // async remove(id: number): Promise<void> {
   //   const stock = await this.findOne(id);
