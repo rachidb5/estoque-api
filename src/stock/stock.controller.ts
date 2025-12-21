@@ -12,7 +12,9 @@ import {
 import { StockService } from './stock.service';
 import { Stock } from './entities/stock.entity';
 import { CreateStockDto } from './dto/create-stock.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Stock')
 @Controller('stock')
 export class StockController {
   constructor(private readonly stockService: StockService) {}
