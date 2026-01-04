@@ -25,7 +25,9 @@ import { Stock } from './stock/entities/stock.entity';
         password: config.get<string>('DB_PASS'),
         database: config.get<string>('DB_NAME'),
         entities: [Stock],
-        synchronize: true,
+        synchronize: false, // 🔴 OBRIGATÓRIO
+        dropSchema: false, // 🔴 GARANTA
+        migrationsRun: false, // 🔴 GARANTA
         retryAttempts: 30,
         retryDelay: 2000,
       }),

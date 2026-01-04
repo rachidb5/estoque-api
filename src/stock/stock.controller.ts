@@ -16,7 +16,6 @@ import { CreateStockDto } from './dto/create-stock.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateStockDto } from './dto/update-stock.dto';
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 @ApiTags('Stock')
 @Controller('stock')
 export class StockController {
