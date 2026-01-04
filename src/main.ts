@@ -7,12 +7,7 @@ async function bootstrap() {
 
   // ✅ CORS pro front no Docker/Local
   app.enableCors({
-    origin: [
-      'http://localhost:8080', // front no nginx (docker)
-      'http://localhost:5173', // front rodando com vite local
-      'https://stock-control-mauve.vercel.app/',
-      '*',
-    ],
+    origin: true, // libera todas as origens
     credentials: true,
   });
 
