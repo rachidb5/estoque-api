@@ -1,0 +1,23 @@
+app = "estoque-api"
+primary_region = "gru"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3000"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+# SE precisar de configuração VM personalizada, faça assim:
+# [[vm]]
+#   cpu_kind = "shared"
+#   cpus = 1
+#   memory_mb = 256  # ← AQUI estava o erro: faltava completar

@@ -10,6 +10,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:8080', // front no nginx (docker)
       'http://localhost:5173', // front rodando com vite local
+      'https://stock-control-mauve.vercel.app/',
     ],
     credentials: true,
   });
