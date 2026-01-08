@@ -4,6 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { StockModule } from './stock/stock.module';
 import { Stock } from './stock/entities/stock.entity';
+import { UsersModule } from './users/users.module';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -24,8 +26,8 @@ import { Stock } from './stock/entities/stock.entity';
         username: config.get<string>('DB_USER'),
         password: config.get<string>('DB_PASS'),
         database: config.get<string>('DB_NAME'),
-        entities: [Stock],
-        synchronize: false, // 🔴 OBRIGATÓRIO
+        entities: [Stock, User],
+        synchronize: true, // 🔴 OBRIGATÓRIO
         dropSchema: false, // 🔴 GARANTA
         migrationsRun: false, // 🔴 GARANTA
         retryAttempts: 30,
@@ -34,6 +36,7 @@ import { Stock } from './stock/entities/stock.entity';
     }),
 
     StockModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
