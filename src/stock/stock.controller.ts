@@ -9,18 +9,20 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { StockService } from './stock.service';
 import { Stock } from './entities/stock.entity';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateStockDto } from './dto/update-stock.dto';
-
+import { AuthGuard } from '@nestjs/passport';
 @ApiTags('Stock')
 @Controller('stock')
 export class StockController {
   constructor(private readonly stockService: StockService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll(
     @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
