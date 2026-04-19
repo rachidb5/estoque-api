@@ -38,17 +38,20 @@ export class StockController {
     return this.stockService.findAllPaginated(page, limit, search);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Stock> {
     return this.stockService.findOne(id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createStockDto: CreateStockDto): Promise<Stock> {
     return this.stockService.create(createStockDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
