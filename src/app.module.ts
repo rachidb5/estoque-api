@@ -6,7 +6,9 @@ import { StockModule } from './stock/stock.module';
 import { Stock } from './stock/entities/stock.entity';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
+import { SoldDevice } from './sell/entities/sold-device.entity';
 import { AuthModule } from './auth/auth.module';
+import { SoldDeviceModule } from './sell/sold-device.module';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { AuthModule } from './auth/auth.module';
         username: config.get<string>('DB_USER'),
         password: config.get<string>('DB_PASS'),
         database: config.get<string>('DB_NAME'),
-        entities: [Stock, User],
+        entities: [Stock, User, SoldDevice],
         synchronize: true, // 🔴 OBRIGATÓRIO
         dropSchema: false, // 🔴 GARANTA
         migrationsRun: false, // 🔴 GARANTA
@@ -38,6 +40,7 @@ import { AuthModule } from './auth/auth.module';
 
     StockModule,
     UsersModule,
+    SoldDeviceModule,
     AuthModule,
   ],
 })
