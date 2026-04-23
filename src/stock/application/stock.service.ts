@@ -65,4 +65,9 @@ export class StockService {
       );
     }
   }
+
+  async remove(id: number): Promise<void> {
+    await this.findOne(id);
+    await this.stockRepository.remove(id);
+  }
 }

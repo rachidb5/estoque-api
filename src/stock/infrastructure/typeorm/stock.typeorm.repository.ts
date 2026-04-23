@@ -48,4 +48,8 @@ export class StockTypeOrmRepository implements IStockRepository {
     await this.repo.update(id, data);
     return this.repo.findOne({ where: { id } }) as Promise<Stock>;
   }
+
+  async remove(id: number): Promise<void> {
+    await this.repo.delete(id);
+  }
 }

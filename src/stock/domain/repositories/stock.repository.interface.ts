@@ -12,4 +12,5 @@ export interface IStockRepository {
   findById(id: number): Promise<Stock | null>;
   create(data: Omit<Stock, 'id'>): Promise<Stock>;
   update(id: number, data: Partial<Stock>): Promise<Stock>;
+  remove(id: number): Promise<void>;
 }
