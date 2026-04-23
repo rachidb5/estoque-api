@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { StockModule } from './stock/stock.module';
-import { Stock } from './stock/entities/stock.entity';
+import { StockEntity } from './stock/infrastructure/typeorm/stock.typeorm.entity';
 import { UsersModule } from './users/users.module';
-import { User } from './users/entities/user.entity';
-import { SoldDevice } from './sell/entities/sold-device.entity';
+import { UserEntity } from './users/infrastructure/typeorm/user.typeorm.entity';
+import { SoldDeviceEntity } from './sell/infrastructure/typeorm/sold-device.typeorm.entity';
 import { AuthModule } from './auth/auth.module';
 import { SoldDeviceModule } from './sell/sold-device.module';
 
@@ -29,7 +29,7 @@ import { SoldDeviceModule } from './sell/sold-device.module';
         username: config.get<string>('DB_USER'),
         password: config.get<string>('DB_PASS'),
         database: config.get<string>('DB_NAME'),
-        entities: [Stock, User, SoldDevice],
+        entities: [StockEntity, UserEntity, SoldDeviceEntity],
         synchronize: true, // 🔴 OBRIGATÓRIO
         dropSchema: false, // 🔴 GARANTA
         migrationsRun: false, // 🔴 GARANTA
