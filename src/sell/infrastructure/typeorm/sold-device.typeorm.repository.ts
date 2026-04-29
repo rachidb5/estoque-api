@@ -50,4 +50,8 @@ export class SoldDeviceTypeOrmRepository implements ISoldDeviceRepository {
     await this.repo.update(id, data);
     return this.repo.findOne({ where: { id } }) as Promise<SoldDevice>;
   }
+
+  async remove(id: number): Promise<void> {
+    await this.repo.delete(id);
+  }
 }

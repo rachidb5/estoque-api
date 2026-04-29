@@ -51,6 +51,7 @@ describe('SoldDeviceService', () => {
       findById: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
+      remove: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -200,6 +201,34 @@ describe('SoldDeviceService', () => {
         NotFoundException,
       );
       expect(repository.update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('remove', () => {
+    it('deve remover a venda quando encontrada', async () => {
+      repository.findById.mockResolvedValue(mockSoldDevice);
+      repository.remove.mockResolvedValue(undefined);
+
+      await service.remove(1);
+
+      expect(repository.findById).toHaveBeenCalledWith(1);
+      expect(repository.remove).toHaveBeenCalledWith(1);
+    });
+
+    it('deve lançar NotFoundException se venda não existe', async () => {
+      repository.findById.mockResolvedValue(null);
+
+      await expect(service.remove(99)).rejects.toThrow(NotFoundException);
+      expect(repository.remove).not.toHaveBeenCalled();
+    });
+
+    it('deve lançar InternalServerErrorException em erro inesperado', async () => {
+      repository.findById.mockResolvedValue(mockSoldDevice);
+      repository.remove.mockRejectedValue(new Error('unexpected'));
+
+      await expect(service.remove(1)).rejects.toThrow(
+        InternalServerErrorException,
+      );
     });
   });
 });

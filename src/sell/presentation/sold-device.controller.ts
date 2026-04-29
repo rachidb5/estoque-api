@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -54,5 +55,12 @@ export class SoldDeviceController {
     @Body() dto: UpdateSoldDeviceDto,
   ): Promise<SoldDevice> {
     return this.soldDeviceService.update(id, dto);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.soldDeviceService.remove(id);
   }
 }

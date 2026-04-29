@@ -12,4 +12,5 @@ export interface ISoldDeviceRepository {
   findById(id: number): Promise<SoldDevice | null>;
   create(data: Omit<SoldDevice, 'id'>): Promise<SoldDevice>;
   update(id: number, data: Partial<SoldDevice>): Promise<SoldDevice>;
+  remove(id: number): Promise<void>;
 }

@@ -66,4 +66,13 @@ export class SoldDeviceService {
       );
     }
   }
+
+  async remove(id: number): Promise<void> {
+    await this.findOne(id);
+    try {
+      await this.soldDeviceRepository.remove(id);
+    } catch {
+      throw new InternalServerErrorException('Erro interno ao remover a venda');
+    }
+  }
 }
