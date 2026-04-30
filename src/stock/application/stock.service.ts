@@ -11,7 +11,11 @@ import { STOCK_REPOSITORY } from '../domain/repositories/stock.repository.interf
 import { Stock } from '../domain/entities/stock';
 import { CreateStockDto } from '../presentation/dto/create-stock.dto';
 import { UpdateStockDto } from '../presentation/dto/update-stock.dto';
-import { PaginatedResult } from '../../shared/types/pagination';
+import {
+  normalizePagination,
+  PaginatedResult,
+  StockPaginationFilters,
+} from '../../shared/types/pagination';
 
 @Injectable()
 export class StockService {
@@ -24,8 +28,16 @@ export class StockService {
     page = 1,
     limit = 10,
     search?: string,
+    filters?: StockPaginationFilters,
   ): Promise<PaginatedResult<Stock>> {
-    return this.stockRepository.findAllPaginated(page, limit, search);
+    const pagination = normalizePagination(page, limit);
+
+    return this.stockRepository.findAllPaginated(
+      pagination.page,
+      pagination.limit,
+      search,
+      filters,
+    );
   }
 
   async findOne(id: number): Promise<Stock> {

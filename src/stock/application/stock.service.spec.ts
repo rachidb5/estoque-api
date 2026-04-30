@@ -63,7 +63,12 @@ describe('StockService', () => {
 
       const result = await service.findAllPaginated(1, 10);
 
-      expect(repository.findAllPaginated).toHaveBeenCalledWith(1, 10, undefined);
+      expect(repository.findAllPaginated).toHaveBeenCalledWith(
+        1,
+        10,
+        undefined,
+        undefined,
+      );
       expect(result).toEqual(mockPaginated);
     });
 
@@ -76,7 +81,12 @@ describe('StockService', () => {
 
       await service.findAllPaginated(1, 10, 'iphone');
 
-      expect(repository.findAllPaginated).toHaveBeenCalledWith(1, 10, 'iphone');
+      expect(repository.findAllPaginated).toHaveBeenCalledWith(
+        1,
+        10,
+        'iphone',
+        undefined,
+      );
     });
   });
 

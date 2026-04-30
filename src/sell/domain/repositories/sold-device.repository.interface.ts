@@ -1,5 +1,8 @@
 import { SoldDevice } from '../entities/sold-device';
-import { PaginatedResult } from '../../../shared/types/pagination';
+import {
+  PaginatedResult,
+  SoldDevicePaginationFilters,
+} from '../../../shared/types/pagination';
 
 export const SOLD_DEVICE_REPOSITORY = 'SOLD_DEVICE_REPOSITORY';
 
@@ -8,6 +11,7 @@ export interface ISoldDeviceRepository {
     page: number,
     limit: number,
     search?: string,
+    filters?: SoldDevicePaginationFilters,
   ): Promise<PaginatedResult<SoldDevice>>;
   findById(id: number): Promise<SoldDevice | null>;
   create(data: Omit<SoldDevice, 'id'>): Promise<SoldDevice>;

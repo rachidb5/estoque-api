@@ -1,5 +1,8 @@
 import { Stock } from '../entities/stock';
-import { PaginatedResult } from '../../../shared/types/pagination';
+import {
+  PaginatedResult,
+  StockPaginationFilters,
+} from '../../../shared/types/pagination';
 
 export const STOCK_REPOSITORY = 'STOCK_REPOSITORY';
 
@@ -8,6 +11,7 @@ export interface IStockRepository {
     page: number,
     limit: number,
     search?: string,
+    filters?: StockPaginationFilters,
   ): Promise<PaginatedResult<Stock>>;
   findById(id: number): Promise<Stock | null>;
   create(data: Omit<Stock, 'id'>): Promise<Stock>;

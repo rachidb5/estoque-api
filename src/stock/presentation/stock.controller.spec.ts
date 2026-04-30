@@ -52,7 +52,10 @@ describe('StockController', () => {
 
       const result = await controller.findAll(1, 10, undefined);
 
-      expect(service.findAllPaginated).toHaveBeenCalledWith(1, 10, undefined);
+      expect(service.findAllPaginated).toHaveBeenCalledWith(1, 10, undefined, {
+        observation: undefined,
+        supplier: undefined,
+      });
       expect(result).toEqual(mockPaginated);
     });
 
@@ -61,7 +64,10 @@ describe('StockController', () => {
 
       await controller.findAll(2, 5, 'iphone');
 
-      expect(service.findAllPaginated).toHaveBeenCalledWith(2, 5, 'iphone');
+      expect(service.findAllPaginated).toHaveBeenCalledWith(2, 5, 'iphone', {
+        observation: undefined,
+        supplier: undefined,
+      });
     });
   });
 

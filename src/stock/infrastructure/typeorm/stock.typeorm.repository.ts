@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { StockEntity } from './stock.typeorm.entity';
 import { IStockRepository } from '../../domain/repositories/stock.repository.interface';
 import { Stock } from '../../domain/entities/stock';
-import { PaginatedResult } from '../../../shared/types/pagination';
+import {
+  normalizePagination,
+  PaginatedResult,
+  StockPaginationFilters,
+} from '../../../shared/types/pagination';
 
 @Injectable()
 export class StockTypeOrmRepository implements IStockRepository {
@@ -17,22 +21,64 @@ export class StockTypeOrmRepository implements IStockRepository {
     page: number,
     limit: number,
     search?: string,
+    filters?: StockPaginationFilters,
   ): Promise<PaginatedResult<Stock>> {
-    const skip = (page - 1) * limit;
-    const where = search
-      ? [
-          { imei: ILike(`%${search}%`) },
-          { cor: ILike(`%${search}%`) },
-          { observacao: ILike(`%${search}%`) },
-        ]
-      : {};
+    const pagination = normalizePagination(page, limit);
+    const query = this.repo.createQueryBuilder('stock');
 
-    const [data, total] = await Promise.all([
-      this.repo.find({ where, skip, take: limit, order: { id: 'DESC' } }),
-      this.repo.count({ where }),
-    ]);
+    if (search?.trim()) {
+      query.andWhere(
+        new Brackets((qb) => {
+          qb.where('stock.imei LIKE :search', { search: `%${search}%` })
+            .orWhere('stock.modelo LIKE :search', { search: `%${search}%` })
+            .orWhere('stock.fornecedor LIKE :search', {
+              search: `%${search}%`,
+            })
+            .orWhere('stock.cor LIKE :search', { search: `%${search}%` })
+            .orWhere('stock.observacao LIKE :search', {
+              search: `%${search}%`,
+            });
+        }),
+      );
+    }
 
-    return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
+    if (filters?.supplier?.trim()) {
+      query.andWhere('stock.fornecedor = :supplier', {
+        supplier: filters.supplier,
+      });
+    }
+
+    if (filters?.observation === 'with') {
+      query.andWhere(
+        'stock.observacao IS NOT NULL AND stock.observacao != :empty',
+        { empty: '' },
+      );
+    }
+
+    if (filters?.observation === 'without') {
+      query.andWhere(
+        new Brackets((qb) => {
+          qb.where('stock.observacao IS NULL').orWhere(
+            'stock.observacao = :empty',
+            { empty: '' },
+          );
+        }),
+      );
+    }
+
+    const [data, total] = await query
+      .orderBy('stock.id', 'DESC')
+      .skip(pagination.skip)
+      .take(pagination.limit)
+      .getManyAndCount();
+
+    return {
+      data,
+      total,
+      page: pagination.page,
+      limit: pagination.limit,
+      totalPages: Math.ceil(total / pagination.limit),
+    };
   }
 
   async findById(id: number): Promise<Stock | null> {

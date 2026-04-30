@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { SoldDeviceEntity } from './sold-device.typeorm.entity';
 import { ISoldDeviceRepository } from '../../domain/repositories/sold-device.repository.interface';
 import { SoldDevice } from '../../domain/entities/sold-device';
-import { PaginatedResult } from '../../../shared/types/pagination';
+import {
+  normalizePagination,
+  PaginatedResult,
+  SoldDevicePaginationFilters,
+} from '../../../shared/types/pagination';
 
 @Injectable()
 export class SoldDeviceTypeOrmRepository implements ISoldDeviceRepository {
@@ -17,24 +21,68 @@ export class SoldDeviceTypeOrmRepository implements ISoldDeviceRepository {
     page: number,
     limit: number,
     search?: string,
+    filters?: SoldDevicePaginationFilters,
   ): Promise<PaginatedResult<SoldDevice>> {
-    const skip = (page - 1) * limit;
-    const where = search
-      ? [
-          { imei: ILike(`%${search}%`) },
-          { aparelho: ILike(`%${search}%`) },
-          { comprador: ILike(`%${search}%`) },
-          { cor: ILike(`%${search}%`) },
-          { observacao: ILike(`%${search}%`) },
-        ]
-      : {};
+    const pagination = normalizePagination(page, limit);
+    const query = this.repo.createQueryBuilder('sale');
 
-    const [data, total] = await Promise.all([
-      this.repo.find({ where, skip, take: limit, order: { id: 'DESC' } }),
-      this.repo.count({ where }),
-    ]);
+    if (search?.trim()) {
+      query.andWhere(
+        new Brackets((qb) => {
+          qb.where('sale.imei LIKE :search', { search: `%${search}%` })
+            .orWhere('sale.aparelho LIKE :search', { search: `%${search}%` })
+            .orWhere('sale.comprador LIKE :search', { search: `%${search}%` })
+            .orWhere('sale.cor LIKE :search', { search: `%${search}%` })
+            .orWhere('sale.observacao LIKE :search', {
+              search: `%${search}%`,
+            });
+        }),
+      );
+    }
 
-    return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
+    if (filters?.status === 'completed') {
+      query.andWhere('sale.aparelho_recebido = :received', {
+        received: true,
+      });
+    }
+
+    if (filters?.status === 'pending') {
+      query.andWhere('sale.aparelho_recebido = :received', {
+        received: false,
+      });
+    }
+
+    if (filters?.condition?.trim()) {
+      query.andWhere('sale.condicao = :condition', {
+        condition: filters.condition,
+      });
+    }
+
+    if (filters?.startDate) {
+      query.andWhere('sale.data >= :startDate', {
+        startDate: filters.startDate,
+      });
+    }
+
+    if (filters?.endDate) {
+      query.andWhere('sale.data <= :endDate', {
+        endDate: filters.endDate,
+      });
+    }
+
+    const [data, total] = await query
+      .orderBy('sale.id', 'DESC')
+      .skip(pagination.skip)
+      .take(pagination.limit)
+      .getManyAndCount();
+
+    return {
+      data,
+      total,
+      page: pagination.page,
+      limit: pagination.limit,
+      totalPages: Math.ceil(total / pagination.limit),
+    };
   }
 
   async findById(id: number): Promise<SoldDevice | null> {

@@ -18,7 +18,10 @@ import { StockService } from '../application/stock.service';
 import { Stock } from '../domain/entities/stock';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
-import { PaginatedResult } from '../../shared/types/pagination';
+import {
+  PaginatedResult,
+  StockPaginationFilters,
+} from '../../shared/types/pagination';
 
 @ApiTags('Stock')
 @Controller('stock')
@@ -31,8 +34,13 @@ export class StockController {
     @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
     @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 10,
     @Query('search') search?: string,
+    @Query('observation') observation?: StockPaginationFilters['observation'],
+    @Query('supplier') supplier?: string,
   ): Promise<PaginatedResult<Stock>> {
-    return this.stockService.findAllPaginated(page, limit, search);
+    return this.stockService.findAllPaginated(page, limit, search, {
+      observation,
+      supplier,
+    });
   }
 
   @UseGuards(AuthGuard('jwt'))

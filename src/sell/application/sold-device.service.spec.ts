@@ -75,7 +75,12 @@ describe('SoldDeviceService', () => {
 
       const result = await service.findAllPaginated(1, 10);
 
-      expect(repository.findAllPaginated).toHaveBeenCalledWith(1, 10, undefined);
+      expect(repository.findAllPaginated).toHaveBeenCalledWith(
+        1,
+        10,
+        undefined,
+        undefined,
+      );
       expect(result).toEqual(mockPaginated);
     });
 
@@ -92,6 +97,7 @@ describe('SoldDeviceService', () => {
         1,
         10,
         'carlos',
+        undefined,
       );
     });
   });

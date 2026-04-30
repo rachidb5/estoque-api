@@ -11,7 +11,11 @@ import { SOLD_DEVICE_REPOSITORY } from '../domain/repositories/sold-device.repos
 import { SoldDevice } from '../domain/entities/sold-device';
 import { CreateSoldDeviceDto } from '../presentation/dto/create-sold-device.dto';
 import { UpdateSoldDeviceDto } from '../presentation/dto/update-sold-device.dto';
-import { PaginatedResult } from '../../shared/types/pagination';
+import {
+  normalizePagination,
+  PaginatedResult,
+  SoldDevicePaginationFilters,
+} from '../../shared/types/pagination';
 
 @Injectable()
 export class SoldDeviceService {
@@ -24,8 +28,16 @@ export class SoldDeviceService {
     page = 1,
     limit = 10,
     search?: string,
+    filters?: SoldDevicePaginationFilters,
   ): Promise<PaginatedResult<SoldDevice>> {
-    return this.soldDeviceRepository.findAllPaginated(page, limit, search);
+    const pagination = normalizePagination(page, limit);
+
+    return this.soldDeviceRepository.findAllPaginated(
+      pagination.page,
+      pagination.limit,
+      search,
+      filters,
+    );
   }
 
   async findOne(id: number): Promise<SoldDevice> {
