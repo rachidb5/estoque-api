@@ -9,8 +9,8 @@ import { QueryFailedError } from 'typeorm';
 import { Client } from '../domain/entities/client';
 import {
   CLIENT_REPOSITORY,
-  IClientRepository,
 } from '../domain/repositories/client.repository.interface';
+import type { IClientRepository } from '../domain/repositories/client.repository.interface';
 import { CreateClientDto } from '../presentation/dto/create-client.dto';
 import { UpdateClientDto } from '../presentation/dto/update-client.dto';
 import {
@@ -51,7 +51,10 @@ export class ClientService {
 
   async create(dto: CreateClientDto): Promise<Client> {
     try {
-      return await this.clientRepository.create(this.normalizePayload(dto));
+      return await this.clientRepository.create({
+        ...this.normalizePayload(dto),
+        total_compras: Number(dto.total_compras ?? 0),
+      });
     } catch (error) {
       this.handleWriteError(error, 'Erro interno ao criar o cliente');
     }
