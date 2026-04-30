@@ -9,6 +9,8 @@ import { UserEntity } from './users/infrastructure/typeorm/user.typeorm.entity';
 import { SoldDeviceEntity } from './sell/infrastructure/typeorm/sold-device.typeorm.entity';
 import { AuthModule } from './auth/auth.module';
 import { SoldDeviceModule } from './sell/sold-device.module';
+import { ClientModule } from './clients/client.module';
+import { ClientEntity } from './clients/infrastructure/typeorm/client.typeorm.entity';
 
 @Module({
   imports: [
@@ -29,7 +31,7 @@ import { SoldDeviceModule } from './sell/sold-device.module';
         username: config.get<string>('DB_USER'),
         password: config.get<string>('DB_PASS'),
         database: config.get<string>('DB_NAME'),
-        entities: [StockEntity, UserEntity, SoldDeviceEntity],
+        entities: [StockEntity, UserEntity, SoldDeviceEntity, ClientEntity],
         synchronize: true, // 🔴 OBRIGATÓRIO
         dropSchema: false, // 🔴 GARANTA
         migrationsRun: false, // 🔴 GARANTA
@@ -41,6 +43,7 @@ import { SoldDeviceModule } from './sell/sold-device.module';
     StockModule,
     UsersModule,
     SoldDeviceModule,
+    ClientModule,
     AuthModule,
   ],
 })
