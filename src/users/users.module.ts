@@ -5,7 +5,6 @@ import { UsersService } from './application/users.service';
 import { UserEntity } from './infrastructure/typeorm/user.typeorm.entity';
 import { UserTypeOrmRepository } from './infrastructure/typeorm/user.typeorm.repository';
 import { USER_REPOSITORY } from './domain/repositories/user.repository.interface';
-import { PromoteUsersToAdminBootstrap } from './application/promote-users-to-admin.bootstrap';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
@@ -16,7 +15,6 @@ import { PromoteUsersToAdminBootstrap } from './application/promote-users-to-adm
       provide: USER_REPOSITORY,
       useClass: UserTypeOrmRepository,
     },
-    PromoteUsersToAdminBootstrap,
   ],
   exports: [UsersService],
 })

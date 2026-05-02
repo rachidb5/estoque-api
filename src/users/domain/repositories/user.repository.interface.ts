@@ -9,6 +9,5 @@ export interface IUserRepository {
   findByRefreshTokenHash(refreshTokenHash: string): Promise<User | null>;
   create(data: Partial<User>): Promise<User>;
   update(id: string, data: Partial<User>): Promise<User>;
-  updateAllRoles(role: 'vendedor' | 'gestor' | 'admin'): Promise<number>;
   remove(id: string): Promise<void>;
 }
