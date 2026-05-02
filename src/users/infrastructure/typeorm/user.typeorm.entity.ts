@@ -43,7 +43,7 @@ export class UserEntity {
   @Column({ type: 'datetime', nullable: true })
   reset_password_expires: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 64, nullable: true })
   @Exclude()
   refresh_token_hash: string | null;
 
