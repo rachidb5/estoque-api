@@ -36,12 +36,14 @@ export class SoldDeviceController {
     @Query('search') search?: string,
     @Query('status') status?: SoldDevicePaginationFilters['status'],
     @Query('condition') condition?: string,
+    @Query('seller') seller?: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ): Promise<PaginatedResult<SoldDevice>> {
     return this.soldDeviceService.findAllPaginated(page, limit, search, {
       status,
       condition,
+      seller,
       startDate,
       endDate,
     });

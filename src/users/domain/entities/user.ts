@@ -3,6 +3,7 @@ export class User {
   username: string;
   email: string;
   phone: string;
+  role: 'vendedor' | 'gestor' | 'admin';
   password: string;
   is_email_verified: boolean;
   email_verification_token: string;

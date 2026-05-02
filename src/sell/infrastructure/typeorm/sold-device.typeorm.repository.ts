@@ -58,6 +58,18 @@ export class SoldDeviceTypeOrmRepository implements ISoldDeviceRepository {
       });
     }
 
+    if (filters?.seller?.trim()) {
+      query.andWhere(
+        new Brackets((qb) => {
+          qb.where('sale.vendedor_id = :seller', {
+            seller: filters.seller,
+          }).orWhere('sale.vendedor_nome = :seller', {
+            seller: filters.seller,
+          });
+        }),
+      );
+    }
+
     if (filters?.startDate) {
       query.andWhere('sale.data >= :startDate', {
         startDate: filters.startDate,

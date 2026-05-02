@@ -2,13 +2,16 @@ import {
   Controller,
   Get,
   Body,
+  Post,
   Patch,
   Param,
   Delete,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import * as bcrypt from 'bcrypt';
 import { UsersService } from '../application/users.service';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -18,6 +21,15 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post()
+  async create(@Body() dto: CreateUserDto) {
+    return this.usersService.create({
+      ...dto,
+      password: await bcrypt.hash(dto.password, 10),
+    });
   }
 
   @UseGuards(AuthGuard('jwt'))

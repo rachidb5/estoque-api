@@ -14,6 +14,7 @@ export interface StockPaginationFilters {
 export interface SoldDevicePaginationFilters {
   status?: 'completed' | 'pending';
   condition?: string;
+  seller?: string;
   startDate?: string;
   endDate?: string;
 }

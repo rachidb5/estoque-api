@@ -21,6 +21,9 @@ export class UserEntity {
   @Column({ nullable: false })
   phone: string;
 
+  @Column({ default: 'vendedor' })
+  role: 'vendedor' | 'gestor' | 'admin';
+
   @Column({ nullable: false })
   @Exclude()
   password: string;
