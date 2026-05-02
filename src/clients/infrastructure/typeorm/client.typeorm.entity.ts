@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('clients')
 export class ClientEntity {
@@ -6,12 +6,14 @@ export class ClientEntity {
   id: number;
 
   @Column({ nullable: false })
+  @Index()
   nome: string;
 
   @Column({ unique: true, nullable: false, length: 11 })
   cpf: string;
 
   @Column({ nullable: false })
+  @Index()
   email: string;
 
   @Column({ nullable: false, length: 20 })

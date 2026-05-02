@@ -24,6 +24,12 @@ export class UserTypeOrmRepository implements IUserRepository {
     return this.repo.findOne({ where: { email } });
   }
 
+  findByRefreshTokenHash(refreshTokenHash: string): Promise<User | null> {
+    return this.repo.findOne({
+      where: { refresh_token_hash: refreshTokenHash },
+    });
+  }
+
   async create(data: Partial<User>): Promise<User> {
     const entity = this.repo.create(data);
     return this.repo.save(entity);

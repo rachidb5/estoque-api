@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
 
 @Entity('sold_devices')
 export class SoldDeviceEntity {
@@ -6,15 +6,18 @@ export class SoldDeviceEntity {
   id: number;
 
   @Column({ type: 'date', nullable: false })
+  @Index()
   data: string;
 
   @Column({ nullable: false })
+  @Index()
   aparelho: string;
 
   @Column({ nullable: true })
   cor: string;
 
   @Column({ nullable: true })
+  @Index()
   condicao: string;
 
   @Column({ unique: true, nullable: false })
@@ -27,12 +30,14 @@ export class SoldDeviceEntity {
   valor_compra: number;
 
   @Column({ nullable: false })
+  @Index()
   comprador: string;
 
   @Column({ nullable: true })
   numero_telefone: string;
 
   @Column({ default: false })
+  @Index()
   aparelho_recebido: boolean;
 
   @Column({ type: 'text', nullable: true })
@@ -57,6 +62,7 @@ export class SoldDeviceEntity {
   valor_total_venda: number;
 
   @Column({ nullable: true })
+  @Index()
   vendedor_id: string;
 
   @Column({ nullable: true })

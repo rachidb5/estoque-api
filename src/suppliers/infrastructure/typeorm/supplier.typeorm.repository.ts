@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository } from 'typeorm';
-import { PaginatedResult, normalizePagination } from '../../../shared/types/pagination';
+import {
+  PaginatedResult,
+  normalizePagination,
+  normalizeSearch,
+} from '../../../shared/types/pagination';
 import { Supplier } from '../../domain/entities/supplier';
 import { ISupplierRepository } from '../../domain/repositories/supplier.repository.interface';
 import { SupplierEntity } from './supplier.typeorm.entity';
@@ -19,22 +23,27 @@ export class SupplierTypeOrmRepository implements ISupplierRepository {
     search?: string,
   ): Promise<PaginatedResult<Supplier>> {
     const pagination = normalizePagination(page, limit);
+    const safeSearch = normalizeSearch(search);
     const query = this.repo.createQueryBuilder('supplier');
 
-    if (search?.trim()) {
+    if (safeSearch) {
       query.andWhere(
         new Brackets((qb) => {
           qb.where('supplier.razao_social LIKE :search', {
-            search: `%${search}%`,
+            search: `%${safeSearch}%`,
           })
             .orWhere('supplier.nome_fantasia LIKE :search', {
-              search: `%${search}%`,
+              search: `%${safeSearch}%`,
             })
-            .orWhere('supplier.email LIKE :search', { search: `%${search}%` })
+            .orWhere('supplier.email LIKE :search', {
+              search: `%${safeSearch}%`,
+            })
             .orWhere('supplier.telefone LIKE :search', {
-              search: `%${search}%`,
+              search: `%${safeSearch}%`,
             })
-            .orWhere('supplier.cnpj LIKE :search', { search: `%${search}%` });
+            .orWhere('supplier.cnpj LIKE :search', {
+              search: `%${safeSearch}%`,
+            });
         }),
       );
     }

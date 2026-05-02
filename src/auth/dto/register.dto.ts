@@ -1,5 +1,5 @@
 // src/auth/dto/register.dto.ts
-import { IsEmail, IsString, MinLength, IsPhoneNumber } from 'class-validator';
+import { IsEmail, IsString, MinLength } from 'class-validator';
 
 export class RegisterDto {
   @IsString()
@@ -8,7 +8,8 @@ export class RegisterDto {
   @IsEmail()
   email: string;
 
-  @IsPhoneNumber('BR')
+  @IsString()
+  @MinLength(10)
   phone: string;
 
   @IsString()

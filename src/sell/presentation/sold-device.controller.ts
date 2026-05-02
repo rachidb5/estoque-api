@@ -14,6 +14,8 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '../../auth/roles.decorator';
+import { RolesGuard } from '../../auth/roles.guard';
 import { SoldDeviceService } from '../application/sold-device.service';
 import { SoldDevice } from '../domain/entities/sold-device';
 import { CreateSoldDeviceDto } from './dto/create-sold-device.dto';
@@ -25,10 +27,11 @@ import {
 
 @ApiTags('Sold Devices')
 @Controller('sold-devices')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Roles('admin', 'gestor', 'vendedor')
 export class SoldDeviceController {
   constructor(private readonly soldDeviceService: SoldDeviceService) {}
 
-  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll(
     @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
@@ -49,20 +52,17 @@ export class SoldDeviceController {
     });
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<SoldDevice> {
     return this.soldDeviceService.findOne(id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: CreateSoldDeviceDto): Promise<SoldDevice> {
     return this.soldDeviceService.create(dto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -71,7 +71,6 @@ export class SoldDeviceController {
     return this.soldDeviceService.update(id, dto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {

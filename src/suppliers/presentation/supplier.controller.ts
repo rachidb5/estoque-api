@@ -14,6 +14,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
+import { Roles } from '../../auth/roles.decorator';
+import { RolesGuard } from '../../auth/roles.guard';
 import { PaginatedResult } from '../../shared/types/pagination';
 import { SupplierService } from '../application/supplier.service';
 import { Supplier } from '../domain/entities/supplier';
@@ -22,10 +24,11 @@ import { UpdateSupplierDto } from './dto/update-supplier.dto';
 
 @ApiTags('Suppliers')
 @Controller('suppliers')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Roles('admin', 'gestor')
 export class SupplierController {
   constructor(private readonly supplierService: SupplierService) {}
 
-  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll(
     @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
@@ -35,20 +38,17 @@ export class SupplierController {
     return this.supplierService.findAllPaginated(page, limit, search);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Supplier> {
     return this.supplierService.findOne(id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: CreateSupplierDto): Promise<Supplier> {
     return this.supplierService.create(dto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -57,7 +57,6 @@ export class SupplierController {
     return this.supplierService.update(id, dto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {

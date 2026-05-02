@@ -6,6 +6,7 @@ import { ISoldDeviceRepository } from '../../domain/repositories/sold-device.rep
 import { SoldDevice } from '../../domain/entities/sold-device';
 import {
   normalizePagination,
+  normalizeSearch,
   PaginatedResult,
   SoldDevicePaginationFilters,
 } from '../../../shared/types/pagination';
@@ -24,17 +25,22 @@ export class SoldDeviceTypeOrmRepository implements ISoldDeviceRepository {
     filters?: SoldDevicePaginationFilters,
   ): Promise<PaginatedResult<SoldDevice>> {
     const pagination = normalizePagination(page, limit);
+    const safeSearch = normalizeSearch(search);
     const query = this.repo.createQueryBuilder('sale');
 
-    if (search?.trim()) {
+    if (safeSearch) {
       query.andWhere(
         new Brackets((qb) => {
-          qb.where('sale.imei LIKE :search', { search: `%${search}%` })
-            .orWhere('sale.aparelho LIKE :search', { search: `%${search}%` })
-            .orWhere('sale.comprador LIKE :search', { search: `%${search}%` })
-            .orWhere('sale.cor LIKE :search', { search: `%${search}%` })
+          qb.where('sale.imei LIKE :search', { search: `%${safeSearch}%` })
+            .orWhere('sale.aparelho LIKE :search', {
+              search: `%${safeSearch}%`,
+            })
+            .orWhere('sale.comprador LIKE :search', {
+              search: `%${safeSearch}%`,
+            })
+            .orWhere('sale.cor LIKE :search', { search: `%${safeSearch}%` })
             .orWhere('sale.observacao LIKE :search', {
-              search: `%${search}%`,
+              search: `%${safeSearch}%`,
             });
         }),
       );

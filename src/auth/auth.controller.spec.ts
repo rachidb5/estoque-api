@@ -4,12 +4,18 @@ import { AuthService } from './auth.service';
 
 describe('AuthController', () => {
   let controller: AuthController;
-  let service: jest.Mocked<Pick<AuthService, 'register' | 'login'>>;
+  let service: jest.Mocked<
+    Pick<AuthService, 'register' | 'login' | 'refresh' | 'logout' | 'me'>
+  >;
+  const response = {} as any;
 
   beforeEach(async () => {
     const mockAuthService = {
       register: jest.fn(),
       login: jest.fn(),
+      refresh: jest.fn(),
+      logout: jest.fn(),
+      me: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -33,11 +39,11 @@ describe('AuthController', () => {
         phone: '+5511999999999',
         password: 'senha123',
       };
-      service.register.mockResolvedValue({ access_token: 'token-mock' });
+      service.register.mockResolvedValue({ access_token: 'token-mock' } as any);
 
-      const result = await controller.register(dto);
+      const result = await controller.register(dto, response);
 
-      expect(service.register).toHaveBeenCalledWith(dto);
+      expect(service.register).toHaveBeenCalledWith(dto, response);
       expect(result).toEqual({ access_token: 'token-mock' });
     });
   });
@@ -45,11 +51,11 @@ describe('AuthController', () => {
   describe('login', () => {
     it('deve chamar authService.login e retornar o token', async () => {
       const dto = { email: 'user@test.com', password: 'senha123' };
-      service.login.mockResolvedValue({ access_token: 'token-mock' });
+      service.login.mockResolvedValue({ access_token: 'token-mock' } as any);
 
-      const result = await controller.login(dto);
+      const result = await controller.login(dto, response);
 
-      expect(service.login).toHaveBeenCalledWith(dto);
+      expect(service.login).toHaveBeenCalledWith(dto, response);
       expect(result).toEqual({ access_token: 'token-mock' });
     });
   });

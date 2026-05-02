@@ -4,6 +4,7 @@ import { Brackets, Repository } from 'typeorm';
 import { Client } from '../../domain/entities/client';
 import { IClientRepository } from '../../domain/repositories/client.repository.interface';
 import {
+  normalizeSearch,
   normalizePagination,
   PaginatedResult,
 } from '../../../shared/types/pagination';
@@ -22,17 +23,22 @@ export class ClientTypeOrmRepository implements IClientRepository {
     search?: string,
   ): Promise<PaginatedResult<Client>> {
     const pagination = normalizePagination(page, limit);
+    const safeSearch = normalizeSearch(search);
     const query = this.repo.createQueryBuilder('client');
 
-    if (search?.trim()) {
+    if (safeSearch) {
       query.andWhere(
         new Brackets((qb) => {
-          qb.where('client.nome LIKE :search', { search: `%${search}%` })
-            .orWhere('client.email LIKE :search', { search: `%${search}%` })
-            .orWhere('client.telefone LIKE :search', {
-              search: `%${search}%`,
+          qb.where('client.nome LIKE :search', { search: `%${safeSearch}%` })
+            .orWhere('client.email LIKE :search', {
+              search: `%${safeSearch}%`,
             })
-            .orWhere('client.cpf LIKE :search', { search: `%${search}%` });
+            .orWhere('client.telefone LIKE :search', {
+              search: `%${safeSearch}%`,
+            })
+            .orWhere('client.cpf LIKE :search', {
+              search: `%${safeSearch}%`,
+            });
         }),
       );
     }

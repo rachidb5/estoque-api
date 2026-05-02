@@ -10,6 +10,8 @@ export class User {
   email_verification_expires: Date;
   reset_password_token: string;
   reset_password_expires: Date;
+  refresh_token_hash: string | null;
+  refresh_token_expires: Date | null;
   is_active: boolean;
   created_at: Date;
   updated_at: Date;

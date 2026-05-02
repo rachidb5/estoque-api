@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
 
 @Entity('stock')
 export class StockEntity {
@@ -6,15 +6,18 @@ export class StockEntity {
   id: number;
 
   @Column({ nullable: false })
+  @Index()
   modelo: string;
 
   @Column({ unique: true, nullable: false })
   imei: string;
 
   @Column({ nullable: true })
+  @Index()
   fornecedor: string;
 
   @Column({ nullable: true })
+  @Index()
   cor: string;
 
   @Column({ nullable: true, type: 'text' })

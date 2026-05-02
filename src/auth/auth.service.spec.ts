@@ -9,6 +9,7 @@ const mockUser = {
   id: 'uuid-123',
   email: 'test@test.com',
   username: 'testuser',
+  role: 'vendedor',
   phone: '+5511999999999',
   password: '',
   is_active: true,
@@ -17,19 +18,33 @@ const mockUser = {
   email_verification_expires: null,
   reset_password_token: null,
   reset_password_expires: null,
+  refresh_token_hash: null,
+  refresh_token_expires: null,
   created_at: new Date(),
   updated_at: new Date(),
 };
 
 describe('AuthService', () => {
   let service: AuthService;
-  let usersService: jest.Mocked<Pick<UsersService, 'findByEmail' | 'create'>>;
+  let usersService: jest.Mocked<
+    Pick<
+      UsersService,
+      | 'findByEmail'
+      | 'findByRefreshTokenHash'
+      | 'create'
+      | 'setRefreshToken'
+      | 'clearRefreshToken'
+    >
+  >;
   let jwtService: jest.Mocked<Pick<JwtService, 'sign'>>;
 
   beforeEach(async () => {
     const mockUsersService = {
       findByEmail: jest.fn(),
+      findByRefreshTokenHash: jest.fn(),
       create: jest.fn(),
+      setRefreshToken: jest.fn(),
+      clearRefreshToken: jest.fn(),
     };
 
     const mockJwtService = {
@@ -64,12 +79,22 @@ describe('AuthService', () => {
     it('deve registrar usuário e retornar access_token', async () => {
       usersService.findByEmail.mockResolvedValue(null);
       usersService.create.mockResolvedValue(mockUser as any);
+      usersService.setRefreshToken.mockResolvedValue(mockUser as any);
 
       const result = await service.register(dto);
 
       expect(usersService.findByEmail).toHaveBeenCalledWith(dto.email);
       expect(usersService.create).toHaveBeenCalled();
-      expect(result).toEqual({ access_token: 'jwt-token-mock' });
+      expect(result).toEqual({
+        access_token: 'jwt-token-mock',
+        expires_in: '15m',
+        user: {
+          id: mockUser.id,
+          username: mockUser.username,
+          email: mockUser.email,
+          role: mockUser.role,
+        },
+      });
     });
 
     it('deve lançar ConflictException se email já existe', async () => {
@@ -83,6 +108,7 @@ describe('AuthService', () => {
     it('deve fazer hash da senha antes de criar o usuário', async () => {
       usersService.findByEmail.mockResolvedValue(null);
       usersService.create.mockResolvedValue(mockUser as any);
+      usersService.setRefreshToken.mockResolvedValue(mockUser as any);
 
       await service.register(dto);
 
@@ -94,12 +120,14 @@ describe('AuthService', () => {
     it('deve assinar JWT com id e email do usuário', async () => {
       usersService.findByEmail.mockResolvedValue(null);
       usersService.create.mockResolvedValue(mockUser as any);
+      usersService.setRefreshToken.mockResolvedValue(mockUser as any);
 
       await service.register(dto);
 
       expect(jwtService.sign).toHaveBeenCalledWith({
         sub: mockUser.id,
         email: mockUser.email,
+        role: mockUser.role,
       });
     });
   });
@@ -113,11 +141,21 @@ describe('AuthService', () => {
         ...mockUser,
         password: hashedPassword,
       } as any);
+      usersService.setRefreshToken.mockResolvedValue(mockUser as any);
 
       const result = await service.login(dto);
 
       expect(usersService.findByEmail).toHaveBeenCalledWith(dto.email);
-      expect(result).toEqual({ access_token: 'jwt-token-mock' });
+      expect(result).toEqual({
+        access_token: 'jwt-token-mock',
+        expires_in: '15m',
+        user: {
+          id: mockUser.id,
+          username: mockUser.username,
+          email: mockUser.email,
+          role: mockUser.role,
+        },
+      });
     });
 
     it('deve lançar UnauthorizedException se usuário não existe', async () => {

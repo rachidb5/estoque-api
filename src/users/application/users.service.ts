@@ -30,6 +30,10 @@ export class UsersService {
     return this.userRepository.findByEmail(email);
   }
 
+  findByRefreshTokenHash(refreshTokenHash: string): Promise<User | null> {
+    return this.userRepository.findByRefreshTokenHash(refreshTokenHash);
+  }
+
   async create(dto: CreateUserDto): Promise<User> {
     try {
       return await this.userRepository.create(dto);
@@ -48,6 +52,24 @@ export class UsersService {
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {
     return this.userRepository.update(id, dto);
+  }
+
+  async setRefreshToken(
+    id: string,
+    refreshTokenHash: string,
+    expiresAt: Date,
+  ): Promise<User> {
+    return this.userRepository.update(id, {
+      refresh_token_hash: refreshTokenHash,
+      refresh_token_expires: expiresAt,
+    });
+  }
+
+  async clearRefreshToken(id: string): Promise<User> {
+    return this.userRepository.update(id, {
+      refresh_token_hash: null,
+      refresh_token_expires: null,
+    });
   }
 
   async remove(id: string): Promise<void> {

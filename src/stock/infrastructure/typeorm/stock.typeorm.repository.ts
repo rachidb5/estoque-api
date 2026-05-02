@@ -6,6 +6,7 @@ import { IStockRepository } from '../../domain/repositories/stock.repository.int
 import { Stock } from '../../domain/entities/stock';
 import {
   normalizePagination,
+  normalizeSearch,
   PaginatedResult,
   StockPaginationFilters,
 } from '../../../shared/types/pagination';
@@ -24,19 +25,22 @@ export class StockTypeOrmRepository implements IStockRepository {
     filters?: StockPaginationFilters,
   ): Promise<PaginatedResult<Stock>> {
     const pagination = normalizePagination(page, limit);
+    const safeSearch = normalizeSearch(search);
     const query = this.repo.createQueryBuilder('stock');
 
-    if (search?.trim()) {
+    if (safeSearch) {
       query.andWhere(
         new Brackets((qb) => {
-          qb.where('stock.imei LIKE :search', { search: `%${search}%` })
-            .orWhere('stock.modelo LIKE :search', { search: `%${search}%` })
-            .orWhere('stock.fornecedor LIKE :search', {
-              search: `%${search}%`,
+          qb.where('stock.imei LIKE :search', { search: `%${safeSearch}%` })
+            .orWhere('stock.modelo LIKE :search', {
+              search: `%${safeSearch}%`,
             })
-            .orWhere('stock.cor LIKE :search', { search: `%${search}%` })
+            .orWhere('stock.fornecedor LIKE :search', {
+              search: `%${safeSearch}%`,
+            })
+            .orWhere('stock.cor LIKE :search', { search: `%${safeSearch}%` })
             .orWhere('stock.observacao LIKE :search', {
-              search: `%${search}%`,
+              search: `%${safeSearch}%`,
             });
         }),
       );
