@@ -55,4 +55,13 @@ export class SoldDeviceEntity {
 
   @Column('decimal', { precision: 10, scale: 2, default: 0 })
   valor_total_venda: number;
+
+  @Column({ nullable: true })
+  vendedor_id: string;
+
+  @Column({ nullable: true })
+  vendedor_nome: string;
+
+  @Column({ nullable: true })
+  canal_venda: string;
 }

@@ -17,4 +17,7 @@ export class SoldDevice {
   valor_entrega: number;
   valor_capa_pelicula: number;
   valor_total_venda: number;
+  vendedor_id?: string;
+  vendedor_nome?: string;
+  canal_venda?: string;
 }

@@ -13,6 +13,7 @@ import { ClientModule } from './clients/client.module';
 import { ClientEntity } from './clients/infrastructure/typeorm/client.typeorm.entity';
 import { SupplierModule } from './suppliers/supplier.module';
 import { SupplierEntity } from './suppliers/infrastructure/typeorm/supplier.typeorm.entity';
+import { CommercialDashboardModule } from './dashboard/commercial-dashboard.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { SupplierEntity } from './suppliers/infrastructure/typeorm/supplier.type
     SoldDeviceModule,
     ClientModule,
     SupplierModule,
+    CommercialDashboardModule,
     AuthModule,
   ],
 })

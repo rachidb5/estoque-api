@@ -51,4 +51,13 @@ export class CreateSoldDeviceDto {
 
   @ApiProperty({ example: 8375.0 })
   valor_total_venda: number;
+
+  @ApiProperty({ example: 'seller-joao', required: false })
+  vendedor_id?: string;
+
+  @ApiProperty({ example: 'Joao Silva', required: false })
+  vendedor_nome?: string;
+
+  @ApiProperty({ example: 'Loja fisica', required: false })
+  canal_venda?: string;
 }
