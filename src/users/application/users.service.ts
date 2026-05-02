@@ -72,6 +72,10 @@ export class UsersService {
     });
   }
 
+  promoteAllToAdmin(): Promise<number> {
+    return this.userRepository.updateAllRoles('admin');
+  }
+
   async remove(id: string): Promise<void> {
     return this.userRepository.remove(id);
   }

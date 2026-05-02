@@ -40,6 +40,15 @@ export class UserTypeOrmRepository implements IUserRepository {
     return this.repo.findOne({ where: { id } }) as Promise<User>;
   }
 
+  async updateAllRoles(role: 'vendedor' | 'gestor' | 'admin'): Promise<number> {
+    const result = await this.repo
+      .createQueryBuilder()
+      .update(UserEntity)
+      .set({ role })
+      .execute();
+    return result.affected ?? 0;
+  }
+
   async remove(id: string): Promise<void> {
     await this.repo.delete(id);
   }
