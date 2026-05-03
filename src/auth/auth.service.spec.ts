@@ -92,6 +92,7 @@ describe('AuthService', () => {
           id: mockUser.id,
           username: mockUser.username,
           email: mockUser.email,
+          phone: mockUser.phone,
           role: mockUser.role,
         },
       });
@@ -153,6 +154,7 @@ describe('AuthService', () => {
           id: mockUser.id,
           username: mockUser.username,
           email: mockUser.email,
+          phone: mockUser.phone,
           role: mockUser.role,
         },
       });

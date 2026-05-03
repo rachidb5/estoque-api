@@ -88,6 +88,7 @@ export class AuthService {
       id: user.id,
       username: user.username,
       email: user.email,
+      phone: user.phone,
       role: user.role,
     };
   }
@@ -113,6 +114,7 @@ export class AuthService {
       email: string;
       role: 'vendedor' | 'gestor' | 'admin';
       username: string;
+      phone?: string;
     },
     response?: Response,
   ) {
@@ -134,6 +136,7 @@ export class AuthService {
         id: user.id,
         username: user.username,
         email: user.email,
+        phone: user.phone,
         role: user.role,
       },
     };
