@@ -5,5 +5,6 @@ export class Stock {
   fornecedor?: string;
   cor?: string;
   observacao?: string;
+  foto?: string;
   valor_unitario: number;
 }

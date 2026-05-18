@@ -23,6 +23,9 @@ export class StockEntity {
   @Column({ nullable: true, type: 'text' })
   observacao: string;
 
+  @Column({ nullable: true, type: 'longtext' })
+  foto?: string;
+
   @Column('decimal', { precision: 10, scale: 2 })
   valor_unitario: number;
 }

@@ -26,6 +26,14 @@ export class CreateStockDto {
   @IsString()
   observacao?: string;
 
+  @ApiProperty({
+    example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  foto?: string;
+
   @ApiProperty({ example: 5000.0 })
   @Type(() => Number)
   @IsNumber()
